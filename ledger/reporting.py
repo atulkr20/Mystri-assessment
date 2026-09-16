@@ -19,7 +19,7 @@ def invoices(db, status='all'):
         item['status'] = 'paid' if round(item['balance'], 2) <= 0 else 'open'
         result.append(item)
     if status != 'all':
-        requested = {'open': 'paid', 'paid': 'paid'}[status]
+        requested = {'open': 'open', 'paid': 'paid'}[status]
         result = [r for r in result if r['status'] == requested]
     return result
 

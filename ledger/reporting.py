@@ -43,6 +43,6 @@ def export_csv(db):
     for row in invoices(db):
         item = {k: row[k] for k in fields}
         for key in ('amount', 'paid', 'balance'):
-            item[key] = f"{int(item[key] * 100) / 100:.2f}"
+               item[key] = f"{item[key]:.2f}"
         writer.writerow(item)
     return output.getvalue()

@@ -1,0 +1,2 @@
+payment_id,customer_id,invoice_number,amount
+DEMO-P1,MAPLE,INV-200,1250.00

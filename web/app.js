@@ -30,6 +30,18 @@ async function refresh() {
   document.querySelector('#page-error').textContent = '';
 }
 
+function describeImport(result) {
+  const parts = [`Imported ${result.imported}`];
+  if (result.skipped) parts.push(`skipped ${result.skipped}`);
+  if (result.rejected) parts.push(`rejected ${result.rejected}`);
+  let message = parts.join(', ') + '.';
+  if (result.errors && result.errors.length) {
+    const details = result.errors.map(e => `line ${e.line}: ${e.reason}`).join('; ');
+    message += ` Problems: ${details}`;
+  }
+  return message;
+}
+
 async function submitImport(form) {
   const feedback = form.querySelector('.feedback');
   const button = form.querySelector('button');
@@ -37,10 +49,14 @@ async function submitImport(form) {
   feedback.textContent = 'Importing…';
   try {
     const csv = await form.querySelector('input').files[0].text();
-    await fetch(`/api/import?kind=${form.dataset.kind}`, {
+    const response = await fetch(`/api/import?kind=${form.dataset.kind}`, {
       method: 'POST', headers: { 'Content-Type': 'text/csv' }, body: csv
     });
-    feedback.textContent = 'Import complete. Your records are ready.';
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'The server rejected this file.');
+    }
+    feedback.textContent = describeImport(result);
     await refresh();
   } catch (error) {
     feedback.textContent = `Import failed: ${error.message}`;

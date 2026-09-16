@@ -1,0 +1,2 @@
+   customer_id,invoice_number,amount,due_date
+   HARBOR,BAD-1,not-a-number,2026-09-09

@@ -15,8 +15,10 @@ def invoices(db, status='all'):
     result = []
     for row in data:
         item = dict(row)
-        item['balance'] = item['amount'] - item['paid']
-        item['status'] = 'paid' if round(item['balance'], 2) <= 0 else 'open'
+        item['amount'] = round(item['amount'], 2)
+        item['paid'] = round(item['paid'], 2)
+        item['balance'] = round(item['amount'] - item['paid'], 2)
+        item['status'] = 'paid' if item['balance'] <= 0 else 'open'
         result.append(item)
     if status != 'all':
         requested = {'open': 'open', 'paid': 'paid'}[status]
